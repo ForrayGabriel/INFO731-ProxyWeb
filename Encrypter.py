@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
+import keyGetter
 
 """This program create the first proxy
 This proxy is the one exchanging data with the web browser
@@ -24,8 +25,12 @@ class handler(BaseHTTPRequestHandler):
         #Get the clear request
         request_clear = self.path
 
+        print("The clear request is : ", request_clear)
+
         #Encrypt the request
         request_encrypted = request_clear
+
+        print("The encrypted request is : ", request_encrypted)
     
         #Generate the new url
         url = "http://127.0.0.1:8001/"+ request_encrypted

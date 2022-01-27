@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
+import keyGetter
 
 """This program create the second proxy
 This proxy is the one exchanging data with the world wide web
