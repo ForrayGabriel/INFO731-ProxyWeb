@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
+import rsa
 
 """This program create the first proxy
 This proxy is the one exchanging data with the web browser
@@ -10,13 +11,7 @@ It will receive an encrypted response and decrypt it before sending it back to t
 
 class handler(BaseHTTPRequestHandler):
 
-    def do_CONNECT(self):
-        """This function is the one called when the http server receive a CONNECT request
-        I currently don't know how to handle this kinf of requests and just pass"""
-        pass
-        
-
-    def do_GET(self):
+    def do_GET(self, pubkey1, privkey2):
         """This function is the one called when the http server receive a GET request 
         It take the requested url, encrypt it and send it to the other proxy, wait for
         a response, decrypt the response and send it back to the web browser"""
@@ -25,7 +20,7 @@ class handler(BaseHTTPRequestHandler):
         request_clear = self.path
 
         #Encrypt the request
-        request_encrypted = request_clear
+        request_encrypted = rsa.encrypt(request_clear.encode(),pubkey1)
     
         #Generate the new url
         url = "http://127.0.0.1:8001/"+ request_encrypted
@@ -34,7 +29,7 @@ class handler(BaseHTTPRequestHandler):
         response_encrypted = requests.get(url, headers=self.headers)
         
         #Decrypt the response
-        response_clear = response_encrypted.text
+        response_clear = rsa.decrypt(response_encrypted, privkey2).decode()
 
         # Send the response code and the headers
         self.send_response(200)

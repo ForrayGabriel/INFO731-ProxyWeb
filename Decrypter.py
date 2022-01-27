@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
+import rsa 
 
 """This program create the second proxy
 This proxy is the one exchanging data with the world wide web
@@ -10,7 +11,7 @@ then make the public request and encrypt and send back the result
 
 class handler(BaseHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_GET(self, privkey1, pubkey2):
         """This function is the one called when the other proxy send an ecrypted get request
         The request is decrypted, sent into the web
         The response is encrypted and sent back to the first proxy"""
@@ -19,13 +20,13 @@ class handler(BaseHTTPRequestHandler):
         request_encrypted = self.path[1:]
 
         # Decrypt the request
-        request_clear = request_encrypted
+        request_clear = rsa.decrypt(request_encrypted, privkey1).decode()
 
         # Make the request and get the response
         response_clear = requests.get(request_clear, headers=self.headers)
 
         # Encrypt the response 
-        response_encrypted = response_clear.text
+        response_encrypted = rsa.encrypt(response_clear.encode(),pubkey2)
 
         # Send the response code and the headers
         self.send_response(200)
