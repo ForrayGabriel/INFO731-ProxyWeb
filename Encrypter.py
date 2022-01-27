@@ -19,6 +19,8 @@ class handler(BaseHTTPRequestHandler):
         #Get the clear request
         request_clear = self.path
 
+        print("The clear request is : ", request_clear)
+
         #Encrypt the request
         request_encrypted = rsa.encrypt(request_clear.encode(),pubkey1)
     
